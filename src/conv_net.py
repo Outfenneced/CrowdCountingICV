@@ -43,5 +43,16 @@ class CNN(nn.Module):
         self.lin2 = nn.Linear(6 * 6 * 36, 6 * 6 * 36)
         self.o = nn.Linear(6 * 6 * 36, 1)
 
-    def forward(self, *input):
-        pass
+    def forward(self, inputs):
+        inputs = self.conv1(inputs)
+        inputs = self.conv2(inputs)
+        inputs = self.conv3(inputs)
+        inputs = inputs.view(inputs.size(0), -1)
+        inputs = self.lin1(inputs)
+        inputs = self.lin2(inputs)
+        output = self.o(inputs)
+        return output
+
+
+cnn = CNN()
+print(cnn)
