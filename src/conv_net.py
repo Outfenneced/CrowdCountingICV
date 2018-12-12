@@ -12,7 +12,7 @@ import scipy.io as sio
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 EPOCHS = 1
-BATCH_SIZE = 16
+BATCH_SIZE = 100
 LEARNING_RATE = 0.001
 
 
