@@ -2,6 +2,7 @@ import cv2
 import os
 import urllib.request
 import zipfile
+import random
 
 import numpy as np
 import scipy.io as sio
@@ -41,6 +42,7 @@ def download_dataset(out_dir):
 
 
 def preprocess(data_dir, output_dir):
+    random.seed = 1
     subdirs = ["Train", "Test"]
     for subdir in subdirs:
         file_count = 0
@@ -49,7 +51,10 @@ def preprocess(data_dir, output_dir):
         os.makedirs(out_dir, exist_ok=True)
         files = os.listdir(full_dir)
         max_num = len(files) // 2
-        for file_num in range(1, max_num+1):
+        image_nums = list(range(1, max_num+1))
+        random.shuffle(image_nums)
+        image_nums = image_nums[:len(image_nums)//2]
+        for file_num in image_nums:
             print("Processing file {subdir} [{file_num}/{max_num}]. "
                   "Full count: {file_count}"
                   .format(subdir=subdir,
