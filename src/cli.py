@@ -21,9 +21,10 @@ def download(data_folder):
 @cli.command()
 @click.argument("data-folder", type=click.Path(dir_okay=True, file_okay=False, exists=True))
 @click.argument("output-folder", type=click.Path(dir_okay=True, file_okay=False))
-def preprocess(data_folder, output_folder):
+@click.option("--remove", is_flag=True)
+def preprocess(data_folder, output_folder, remove):
     os.makedirs(output_folder, exist_ok=True)
-    data.preprocess(data_folder, output_folder)
+    data.preprocess(data_folder, output_folder, remove)
 
 
 @cli.command()

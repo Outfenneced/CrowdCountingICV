@@ -58,7 +58,7 @@ def download_dataset(out_dir):
     os.remove(out_path)
 
 
-def preprocess(data_dir, output_dir):
+def preprocess(data_dir, output_dir, remove=False):
     random.seed = 1
     subdirs = ["Train", "Test"]
     for subdir in subdirs:
@@ -102,3 +102,6 @@ def preprocess(data_dir, output_dir):
                     label = np.atleast_2d(np.count_nonzero(sub_mark))
                     np.savez(out_file, image=sub_image, label=label)
                     file_count += 1
+            if remove:
+                os.remove(image_file)
+                os.remove(mat_file)
