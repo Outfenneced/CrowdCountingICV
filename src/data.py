@@ -52,8 +52,9 @@ def preprocess(data_dir, output_dir):
         files = os.listdir(full_dir)
         max_num = len(files) // 2
         image_nums = list(range(1, max_num+1))
-        random.shuffle(image_nums)
-        image_nums = image_nums[:len(image_nums)//2]
+        if subdirs == "Train":
+            random.shuffle(image_nums)
+            image_nums = image_nums[:len(image_nums)//2]
         for file_num in image_nums:
             print("Processing file {subdir} [{file_num}/{max_num}]. "
                   "Full count: {file_count}"
