@@ -29,7 +29,7 @@ class CCDataset(Dataset):
         file = np.load(file_path)
         image_grey = file["image"]
         count = file["label"].astype(dtype=np.float32)
-        return self.transform(np.atleast_3d(image_grey)), torch.from_numpy(np.atleast_2d(count))
+        return self.transform(np.atleast_3d(image_grey)), torch.from_numpy(np.atleast_3d(count))
 
     def __len__(self):
         return self.data_length
