@@ -58,7 +58,7 @@ def download_dataset(out_dir):
     os.remove(out_path)
 
 
-def preprocess(data_dir, output_dir, remove=False):
+def preprocess(data_dir, output_dir, calc_train=False, remove=False):
     random.seed = 1
     subdirs = ["Train", "Test"]
     for subdir in subdirs:
@@ -73,25 +73,25 @@ def preprocess(data_dir, output_dir, remove=False):
             random.shuffle(image_nums)
             image_nums = image_nums[:len(image_nums)//2]
             valid_nums = image_nums[-100:]
-        for file_num in image_nums:
-            print("Processing file {subdir} [{file_num}]. "
-                  "Full count: {file_count}"
-                  .format(subdir=subdir,
-                          file_num=file_num,
-                          file_count=file_count))
-            image_file = os.path.join(full_dir, IMAGE_FILE_FORMAT.format(file_num))
-            mat_file = os.path.join(full_dir, MAT_FILE_FORMAT.format(file_num))
-            file_count = process_image(image_file, mat_file, out_dir, file_count, remove)
+        if calc_train:
+            for file_num in image_nums:
+                print("Processing file {subdir} [{file_num}]. "
+                      "Full count: {file_count}"
+                      .format(subdir=subdir,
+                              file_num=file_num,
+                              file_count=file_count))
+                image_file = os.path.join(full_dir, IMAGE_FILE_FORMAT.format(file_num))
+                mat_file = os.path.join(full_dir, MAT_FILE_FORMAT.format(file_num))
+                file_count = process_image(image_file, mat_file, out_dir, file_count, remove)
         if subdir == "Train":
             file_count = 0
             out_dir = os.path.join(output_dir, "Valid")
             os.makedirs(out_dir, exist_ok=True)
             for file_num in valid_nums:
-                print("Processing file Valid [{file_num}/{max_num}]. "
+                print("Processing file {subdir} [{file_num}]. "
                       "Full count: {file_count}"
                       .format(subdir=subdir,
                               file_num=file_num,
-                              max_num=max_num,
                               file_count=file_count))
                 image_file = os.path.join(full_dir, IMAGE_FILE_FORMAT.format(file_num))
                 mat_file = os.path.join(full_dir, MAT_FILE_FORMAT.format(file_num))
