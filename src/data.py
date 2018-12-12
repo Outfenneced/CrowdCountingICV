@@ -69,39 +69,60 @@ def preprocess(data_dir, output_dir, remove=False):
         files = os.listdir(full_dir)
         max_num = len(files) // 2
         image_nums = list(range(1, max_num+1))
-        if subdirs == "Train":
+        if subdir == "Train":
             random.shuffle(image_nums)
             image_nums = image_nums[:len(image_nums)//2]
+            valid_nums = image_nums[-100:]
         for file_num in image_nums:
-            print("Processing file {subdir} [{file_num}/{max_num}]. "
+            print("Processing file {subdir} [{file_num}]. "
                   "Full count: {file_count}"
                   .format(subdir=subdir,
                           file_num=file_num,
-                          max_num=max_num,
                           file_count=file_count))
             image_file = os.path.join(full_dir, IMAGE_FILE_FORMAT.format(file_num))
             mat_file = os.path.join(full_dir, MAT_FILE_FORMAT.format(file_num))
-            image = cv2.imread(image_file)
-            image_grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            if image_grey.shape[0] < WINDOW_SHAPE:
-                diffx = WINDOW_SHAPE - image_grey.shape[0]
-                image_grey = np.pad(image_grey, ((diffx, 0), (0, 0)), 'constant', constant_values=0)
-            if image_grey.shape[1] < WINDOW_SHAPE:
-                diffy = WINDOW_SHAPE - image_grey.shape[1]
-                image_grey = np.pad(image_grey, ((0, 0), (diffy, 0)), 'constant', constant_values=0)
+            file_count = process_image(image_file, mat_file, out_dir, file_count, remove)
+        if subdir == "Train":
+            file_count = 0
+            out_dir = os.path.join(output_dir, "Valid")
+            os.makedirs(out_dir, exist_ok=True)
+            for file_num in valid_nums:
+                print("Processing file Valid [{file_num}/{max_num}]. "
+                      "Full count: {file_count}"
+                      .format(subdir=subdir,
+                              file_num=file_num,
+                              max_num=max_num,
+                              file_count=file_count))
+                image_file = os.path.join(full_dir, IMAGE_FILE_FORMAT.format(file_num))
+                mat_file = os.path.join(full_dir, MAT_FILE_FORMAT.format(file_num))
+                file_count = process_image(image_file, mat_file, out_dir, file_count, remove)
 
-            marks = get_marks_from_file(mat_file, image_grey.shape)
 
-            sub_images = skimage.util.view_as_windows(image_grey, WINDOW_SHAPE, step=WINDOW_SHAPE)
-            sub_marks = skimage.util.view_as_windows(marks, WINDOW_SHAPE, step=WINDOW_SHAPE)
-            for x in range(0, sub_images.shape[0]):
-                for y in range(0, sub_images.shape[1]):
-                    sub_mark = sub_marks[x, y]
-                    sub_image = sub_images[x, y]
-                    out_file = os.path.join(out_dir, str(file_count))
-                    label = np.atleast_2d(np.count_nonzero(sub_mark))
-                    np.savez(out_file, image=sub_image, label=label)
-                    file_count += 1
-            if remove:
-                os.remove(image_file)
-                os.remove(mat_file)
+def process_image(image_file, mat_file, out_dir, file_count, remove):
+    image = cv2.imread(image_file)
+    image_grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if image_grey.shape[0] < WINDOW_SHAPE:
+        diffx = WINDOW_SHAPE - image_grey.shape[0]
+        image_grey = np.pad(image_grey, ((diffx, 0), (0, 0)), 'constant',
+                            constant_values=0)
+    if image_grey.shape[1] < WINDOW_SHAPE:
+        diffy = WINDOW_SHAPE - image_grey.shape[1]
+        image_grey = np.pad(image_grey, ((0, 0), (diffy, 0)), 'constant',
+                            constant_values=0)
+
+    marks = get_marks_from_file(mat_file, image_grey.shape)
+
+    sub_images = skimage.util.view_as_windows(image_grey, WINDOW_SHAPE, step=WINDOW_SHAPE)
+    sub_marks = skimage.util.view_as_windows(marks, WINDOW_SHAPE, step=WINDOW_SHAPE)
+    for x in range(0, sub_images.shape[0]):
+        for y in range(0, sub_images.shape[1]):
+            sub_mark = sub_marks[x, y]
+            sub_image = sub_images[x, y]
+            out_file = os.path.join(out_dir, str(file_count))
+            label = np.atleast_2d(np.count_nonzero(sub_mark))
+            np.savez(out_file, image=sub_image, label=label)
+            file_count += 1
+    if remove:
+        os.remove(image_file)
+        os.remove(mat_file)
+    return file_count
