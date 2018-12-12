@@ -80,7 +80,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1):
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LEARNING_RATE)
 
     train_data = CCDataset(data_path, type="Train")
-    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, num_workers=8, shuffle=True)
 
     num_steps = len(train_loader)
     for epoch in range(epochs):
