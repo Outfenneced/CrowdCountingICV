@@ -10,8 +10,6 @@ from torchvision.transforms import transforms
 import scipy.io as sio
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-EPOCHS = 1
 BATCH_SIZE = 100
 LEARNING_RATE = 0.001
 
@@ -69,7 +67,8 @@ class CNN(nn.Module):
         return output
 
 
-def train(data_path, classifier_out):
+def train(data_path, classifier_out, gpu=0, epochs=1):
+    device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     start_time = datetime.now()
     print("Start time: ", start_time)
 
@@ -84,7 +83,7 @@ def train(data_path, classifier_out):
     train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 
     num_steps = len(train_loader)
-    for epoch in range(EPOCHS):
+    for epoch in range(epochs):
         for i, (images, labels) in enumerate(train_loader):
             images = images.to(device)
             labels = labels.to(device)
@@ -94,7 +93,7 @@ def train(data_path, classifier_out):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, EPOCHS, i + 1, num_steps, loss.item()))
+            print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, epochs, i + 1, num_steps, loss.item()))
     end_time = datetime.now()
     print("Start time: ", start_time)
     print("End time: ", end_time)
@@ -102,7 +101,8 @@ def train(data_path, classifier_out):
     torch.save(cnn.state_dict(), classifier_out)
 
 
-def test(cnn_path, data_dir):
+def test(cnn_path, data_dir, gpu=5):
+    device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     test_data = CCDataset(data_dir, type="Test")
     test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
 
