@@ -71,8 +71,8 @@ def preprocess(data_dir, output_dir, calc_train=False, remove=False):
         image_nums = list(range(1, max_num+1))
         if subdir == "Train":
             random.shuffle(image_nums)
-            image_nums = image_nums[:len(image_nums)//2]
             valid_nums = image_nums[-100:]
+            image_nums = image_nums[:len(image_nums)//2]
         if calc_train:
             for file_num in image_nums:
                 print("Processing file {subdir} [{file_num}]. "
