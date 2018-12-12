@@ -17,10 +17,10 @@ LEARNING_RATE = 0.001
 
 
 class CCDataset(Dataset):
-    def __init__(self, root, train=True):
+    def __init__(self, root, type=""):
         self.transform = transforms.Compose([transforms.ToTensor()])
 
-        self.full_path = os.path.join(root, "train" if train else "test")
+        self.full_path = os.path.join(root, type)
         dir_info = os.listdir(self.full_path)
         self.data_length = len(dir_info)
 
@@ -80,7 +80,7 @@ def train(data_path, classifier_out):
     loss_function = nn.MSELoss()
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LEARNING_RATE)
 
-    train_data = CCDataset(data_path, train=True)
+    train_data = CCDataset(data_path, type="Train")
     train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 
     num_steps = len(train_loader)
@@ -103,7 +103,7 @@ def train(data_path, classifier_out):
 
 
 def test(cnn_path, data_dir):
-    test_data = CCDataset(data_dir, train=False)
+    test_data = CCDataset(data_dir, type="Test")
     test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
 
     cnn = torch.load(cnn_path)
