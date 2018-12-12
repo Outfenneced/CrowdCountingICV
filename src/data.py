@@ -1,3 +1,6 @@
+import sys
+import time
+
 import cv2
 import os
 import urllib.request
@@ -33,9 +36,23 @@ def get_marks_from_file(mat_path, shape):
     return marks
 
 
+def reporthook(count, block_size, total_size):
+    global start_time
+    if count == 0:
+        start_time = time.time()
+        return
+    duration = time.time() - start_time
+    progress_size = int(count * block_size)
+    speed = int(progress_size / (1024 * duration))
+    percent = int(count * block_size * 100 / total_size)
+    sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
+                    (percent, progress_size / (1024 * 1024), speed, duration))
+    sys.stdout.flush()
+
+
 def download_dataset(out_dir):
     out_path = os.path.join(out_dir, "dataset.zip")
-    urllib.request.urlretrieve("http://crcv.ucf.edu/data/ucf-qnrf/UCF-QNRF_ECCV18.zip", out_path)
+    urllib.request.urlretrieve("http://crcv.ucf.edu/data/ucf-qnrf/UCF-QNRF_ECCV18.zip", out_path, reporthook=reporthook)
     with zipfile.ZipFile(out_path, "r") as zip_ref:
         zip_ref.extractall("dir")
     os.remove(out_path)
