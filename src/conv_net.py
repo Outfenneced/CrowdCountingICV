@@ -67,7 +67,7 @@ class CNN(nn.Module):
 
 
 def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
-    device = torch.device('cpu')
+    device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     start_time = datetime.now()
     print("Start time: ", start_time)
 
@@ -103,7 +103,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
 def test(cnn_path, data_dir, gpu=5, batch_size=100):
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     test_data = CCDataset(data_dir, type="Test")
-    test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
+    test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
 
     cnn = torch.load(cnn_path)
     cnn.eval()
