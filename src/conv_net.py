@@ -10,8 +10,7 @@ from torchvision.transforms import transforms
 import scipy.io as sio
 
 
-device = torch.device('cpu')
-# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 EPOCHS = 1
 BATCH_SIZE = 16
 LEARNING_RATE = 0.001
