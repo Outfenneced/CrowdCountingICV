@@ -33,9 +33,10 @@ def preprocess(data_folder, output_folder, no_train, remove):
 @click.argument("classifier-out", type=click.Path(dir_okay=False, file_okay=True))
 @click.option("--gpu", type=int, default=0)
 @click.option("--epochs", type=int, default=1)
-def train(data_folder, classifier_out, gpu, epochs):
+@click.option("--batch", type=int, default=100)
+def train(data_folder, classifier_out, gpu, epochs, batch):
     os.makedirs(os.path.dirname(classifier_out), exist_ok=True)
-    conv_net.train(data_folder, classifier_out, gpu=gpu, epochs=epochs)
+    conv_net.train(data_folder, classifier_out, gpu=gpu, epochs=epochs, batch_size=batch)
 
 
 if __name__ == '__main__':

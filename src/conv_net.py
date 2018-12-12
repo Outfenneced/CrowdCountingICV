@@ -10,7 +10,6 @@ from torchvision.transforms import transforms
 import scipy.io as sio
 
 
-BATCH_SIZE = 100
 LEARNING_RATE = 0.001
 
 
@@ -67,8 +66,8 @@ class CNN(nn.Module):
         return output
 
 
-def train(data_path, classifier_out, gpu=0, epochs=1):
-    device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
+def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
+    device = torch.device('cpu')
     start_time = datetime.now()
     print("Start time: ", start_time)
 
@@ -80,7 +79,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1):
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LEARNING_RATE)
 
     train_data = CCDataset(data_path, type="Train")
-    train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
     num_steps = len(train_loader)
     for epoch in range(epochs):
@@ -101,7 +100,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1):
     torch.save(cnn.state_dict(), classifier_out)
 
 
-def test(cnn_path, data_dir, gpu=5):
+def test(cnn_path, data_dir, gpu=5, batch_size=100):
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     test_data = CCDataset(data_dir, type="Test")
     test_loader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
