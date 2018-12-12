@@ -86,13 +86,13 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
         for i, (images, labels) in enumerate(train_loader):
             images = images.to(device)
             labels = labels.to(device)
-            print("Start")
             outputs = cnn(images)
             loss = loss_function(outputs, labels)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, epochs, i + 1, num_steps, loss.item()))
+            if i % 10 == 0:
+                print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, epochs, i + 1, num_steps, loss.item()))
     end_time = datetime.now()
     print("Start time: ", start_time)
     print("End time: ", end_time)
