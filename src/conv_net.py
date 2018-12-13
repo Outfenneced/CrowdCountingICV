@@ -66,7 +66,7 @@ class CNN(nn.Module):
         return output
 
 
-def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
+def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100, load_threading=8):
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     start_time = datetime.now()
     print("Start time: ", start_time)
@@ -79,7 +79,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100):
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LEARNING_RATE)
 
     train_data = CCDataset(data_path, type="Train")
-    train_loader = DataLoader(train_data, batch_size=batch_size, num_workers=8, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size=batch_size, num_workers=load_threading, shuffle=True)
 
     num_steps = len(train_loader)
     for epoch in range(epochs):
