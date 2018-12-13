@@ -36,7 +36,7 @@ def preprocess(data_folder, output_folder, no_train, remove):
 @click.option("--batch", type=int, default=100)
 @click.option("--threading", type=int, default=8)
 def train(data_folder, classifier_out, gpu, epochs, batch, threading):
-    os.makedirs(os.path.dirname(classifier_out), exist_ok=True)
+    os.makedirs(classifier_out, exist_ok=True)
     conv_net.train(data_folder, classifier_out, gpu=gpu, epochs=epochs, batch_size=batch, load_threading=threading)
 
 
