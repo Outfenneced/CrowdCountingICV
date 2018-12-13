@@ -94,8 +94,8 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100, load_threa
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            if i % 100 == 0:
-                print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, epochs, i + 1, num_steps, loss.item()))
+            if i % 10 == 0:
+                print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch, epochs, i, num_steps, loss.item()))
         if epoch % 10 == 0:
             cls_file = os.path.join(classifier_out, CLASSIFIER_FORMAT.format(epoch=epoch))
             print("Saving epoch {epoch} to {filename}".format(epoch=epoch, filename=cls_file))
