@@ -30,7 +30,7 @@ def preprocess(data_folder, output_folder, no_train, remove):
 
 @cli.command()
 @click.argument("data-folder", type=click.Path(dir_okay=True, file_okay=False, exists=True))
-@click.argument("classifier-out", type=click.Path(dir_okay=False, file_okay=True))
+@click.argument("classifier-out", type=click.Path(dir_okay=True, file_okay=False))
 @click.option("--gpu", type=int, default=0)
 @click.option("--epochs", type=int, default=1)
 @click.option("--batch", type=int, default=100)

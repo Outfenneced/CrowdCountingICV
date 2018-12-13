@@ -66,6 +66,9 @@ class CNN(nn.Module):
         return output
 
 
+CLASSIFIER_FORMAT = "classifier{epoch}.ckpt"
+
+
 def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100, load_threading=8):
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
     start_time = datetime.now()
@@ -91,13 +94,18 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100, load_threa
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            if i % 10 == 0:
+            if i % 100 == 0:
                 print("Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}".format(epoch + 1, epochs, i + 1, num_steps, loss.item()))
+        if epoch % 10 == 0:
+            cls_file = os.path.join(classifier_out, CLASSIFIER_FORMAT.format(epoch=epoch))
+            print("Saving epoch {epoch} to {filename}".format(epoch=epoch, filename=cls_file))
+            torch.save(cnn.state_dict(), cls_file)
     end_time = datetime.now()
     print("Start time: ", start_time)
     print("End time: ", end_time)
     print("Duration: ", end_time - start_time)
-    torch.save(cnn.state_dict(), classifier_out)
+    cls_file = os.path.join(classifier_out, CLASSIFIER_FORMAT.format(epoch="DONE"))
+    torch.save(cnn.state_dict(), cls_file)
 
 
 def test(cnn_path, data_dir, gpu=5, batch_size=100):
