@@ -121,6 +121,7 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
 
         cnn_path = os.path.join(cnn_dir, cnn_name)
         cnn = CNN()
+        cnn.to(device)
         cnn.load_state_dict(torch.load(cnn_path))
         cnn.eval()
 
