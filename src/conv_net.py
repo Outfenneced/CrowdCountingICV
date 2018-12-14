@@ -120,7 +120,8 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
         test_loader = DataLoader(test_data, batch_size=batch_size, num_workers=load_threading, shuffle=False)
 
         cnn_path = os.path.join(cnn_dir, cnn_name)
-        cnn = torch.load(cnn_path)
+        cnn = CNN()
+        cnn.load_state_dict(torch.load(cnn_path))
         cnn.eval()
 
         loss_function = nn.MSELoss()
