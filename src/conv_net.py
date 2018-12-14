@@ -114,7 +114,6 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
     cnn_names = os.listdir(cnn_dir)
     for cnn_name in cnn_names:
         cnn_number = cnn_name.replace("classifier", "").replace(".ckpt", "")
-        cnn_number = 500 if type(cnn_number) != int else cnn_number
 
         test_data = CCDataset(data_dir, type=test_type)
         test_loader = DataLoader(test_data, batch_size=batch_size, num_workers=load_threading, shuffle=False)
