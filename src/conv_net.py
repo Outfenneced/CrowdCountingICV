@@ -107,7 +107,7 @@ def train(data_path, classifier_out, gpu=0, epochs=1, batch_size=100, load_threa
     torch.save(cnn.state_dict(), cls_file)
 
 
-def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100):
+def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_threading=12):
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
 
     cnn_loss = list()
@@ -117,7 +117,7 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100):
         cnn_number = 500 if type(cnn_number) != int else cnn_number
 
         test_data = CCDataset(data_dir, type=test_type)
-        test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
+        test_loader = DataLoader(test_data, batch_size=batch_size, num_workers=load_threading, shuffle=False)
 
         cnn_path = os.path.join(cnn_dir, cnn_name)
         cnn = torch.load(cnn_path)
