@@ -134,7 +134,8 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
                 labels = labels.to(device)
                 outputs = np.append(outputs, cnn(images))
                 correct_vals = np.append(correct_vals, labels)
-
+                print(outputs)
+                print(correct_vals)
             outputs = torch.from_numpy(outputs)
             correct_vals = torch.from_numpy(correct_vals)
             loss = loss_function(outputs, correct_vals).item()
