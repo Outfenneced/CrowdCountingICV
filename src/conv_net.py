@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 
 import numpy as np
+import PIL
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
@@ -111,7 +112,7 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
 
     cnn_loss = list()
-    cnn_name = "classifierDONE.ckpt"
+    cnn_name = "classifier10.ckpt"
     cnn_number = cnn_name.replace("classifier", "").replace(".ckpt", "")
 
     test_data = CCDataset(data_dir, type=test_type)
