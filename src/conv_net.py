@@ -111,36 +111,33 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
     device = torch.device('cuda:{}'.format(gpu) if torch.cuda.is_available() else 'cpu')
 
     cnn_loss = list()
-    cnn_names = os.listdir(cnn_dir)
-    for cnn_name in cnn_names:
-        cnn_number = cnn_name.replace("classifier", "").replace(".ckpt", "")
+    cnn_name = "classifierDONE.ckpt"
+    cnn_number = cnn_name.replace("classifier", "").replace(".ckpt", "")
 
-        test_data = CCDataset(data_dir, type=test_type)
-        test_loader = DataLoader(test_data, batch_size=batch_size, num_workers=load_threading, shuffle=False)
+    test_data = CCDataset(data_dir, type=test_type)
+    test_loader = DataLoader(test_data, batch_size=batch_size, num_workers=load_threading, shuffle=False)
 
-        cnn_path = os.path.join(cnn_dir, cnn_name)
-        cnn = CNN()
-        cnn.to(device)
-        cnn.load_state_dict(torch.load(cnn_path))
-        cnn.eval()
+    cnn_path = os.path.join(cnn_dir, cnn_name)
+    cnn = CNN()
+    cnn.to(device)
+    cnn.load_state_dict(torch.load(cnn_path))
+    cnn.eval()
 
-        loss_function = nn.MSELoss()
+    loss_function = nn.MSELoss()
 
-        with torch.no_grad():
-            outputs = np.array(0, dtype=np.float32)
-            correct_vals = np.array(0, dtype=np.float32)
-            for images, labels in test_loader:
-                images = images.to(device)
-                labels = labels.to(device)
-                outputs = np.append(outputs, cnn(images))
-                correct_vals = np.append(correct_vals, labels)
-                print(outputs)
-                print(correct_vals)
-            outputs = torch.from_numpy(outputs)
-            correct_vals = torch.from_numpy(correct_vals)
-            loss = loss_function(outputs, correct_vals).item()
-            print(outputs)
-            print(correct_vals)
-            print(cnn_number, " MSE loss: ", loss)
-        cnn_loss.append((cnn_number, loss))
+    with torch.no_grad():
+        outputs = np.array(0, dtype=np.float32)
+        correct_vals = np.array(0, dtype=np.float32)
+        for images, labels in test_loader:
+            images = images.to(device)
+            labels = labels.to(device)
+            outputs = np.append(outputs, cnn(images))
+            correct_vals = np.append(correct_vals, labels)
+        outputs = torch.from_numpy(outputs)
+        correct_vals = torch.from_numpy(correct_vals)
+        loss = loss_function(outputs, correct_vals).item()
+        print(outputs)
+        print(correct_vals)
+        print(cnn_number, " MSE loss: ", loss)
+    cnn_loss.append((cnn_number, loss))
     return cnn_loss
