@@ -138,6 +138,8 @@ def test(data_dir, cnn_dir, test_type="Test", gpu=5, batch_size=100, load_thread
             outputs = torch.from_numpy(outputs)
             correct_vals = torch.from_numpy(correct_vals)
             loss = loss_function(outputs, correct_vals).item()
+            print(outputs)
+            print(correct_vals)
             print(cnn_number, " MSE loss: ", loss)
         cnn_loss.append((cnn_number, loss))
     return cnn_loss
